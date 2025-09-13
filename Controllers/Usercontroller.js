@@ -1,6 +1,6 @@
 import { ErrorFunc } from "../Middlewares/Catch_Error.js";
-import { Userauth, userModel} from "../Models/userModel.js";
-import { Postcontent } from "../Models/userModel.js";
+import { Userauth, userModel} from "../Models/Usermodel.js";
+import { Postcontent } from "../Models/Usermodel.js";
 import { APIerror } from "../Middlewares/Api_Error.js";
 import { SendOTp } from "../Utils/OtpCont.js";
 import bcrypt from "bcrypt"
@@ -10,6 +10,45 @@ import axios from "axios";
 import jwt from "jsonwebtoken";
 import { oauth2client } from "../utils/Googleconfig.js";
 
+
+
+
+// < ------------------------------  LIKE COUNT   ----------------------------- >
+
+export const Viewfunc = async(req, res) => {
+  try {
+    const post = await PostCont.findByIdAndUpdate(
+      req.params.id,
+      { $inc : {watchcount : 1}},
+      { new: true}
+    );
+    res.json(post)
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success : false,
+      message: "something went wrong in viecount"
+    })
+  }
+}
+
+
+export const Likefunc = async(req, res) => {
+  try {
+    const post = await PostCont.findByIdAndUpdate(
+      req.params.id,
+      { $inc : {likecount : 1}},
+      { new: true}
+    );
+    res.json(post)
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success : false,
+      message: "something went wrong in likecount"
+    })
+  }
+}
 
 
 // < ------------------------------ USER SIGNUP ----------------------------- >
@@ -144,16 +183,17 @@ export const Githublogin = async (req, res) => {
   }
 }
 
-
-
+export const allpostget = async (req, res) => {
+  
+}
 
 // < ------------------------------  POST CONTENT START    ----------------------------- >
 
 export const PostCont = async (req, res, next) => {
-    try {
-
-        const { title, tags, categories, description } = req.body
-        if (!title || !tags || !categories || !description) {
+  try {
+    
+    const { title, tags, categories, description } = req.body
+    if (!title || !tags || !categories || !description) {
             return next(new APIerror(400, "All Field are required!"))
         }
 
@@ -182,7 +222,7 @@ export const PostCont = async (req, res, next) => {
         })
 
     } catch (error) {
-        console.error(error);
+        console.error("post conent error ", error);
 
         return res.status(400).json({
             success: false,
@@ -191,7 +231,6 @@ export const PostCont = async (req, res, next) => {
         })
     }
 }
-
 
 // < ------------------------------ GENERATE OTP METHOD ----------------------------- >
 
