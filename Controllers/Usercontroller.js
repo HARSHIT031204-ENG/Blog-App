@@ -32,7 +32,6 @@ export const Viewfunc = async(req, res) => {
   }
 }
 
-
 export const Likefunc = async(req, res) => {
   try {
     const post = await PostCont.findByIdAndUpdate(
@@ -49,7 +48,6 @@ export const Likefunc = async(req, res) => {
     })
   }
 }
-
 
 // < ------------------------------ USER SIGNUP ----------------------------- >
 
@@ -122,7 +120,6 @@ export const Googlelogin = async (req, res) => {
   }
 };
 
-
 export const Githublogin = async (req, res) => {
   try {
     const { code } = req.query;
@@ -184,13 +181,35 @@ export const Githublogin = async (req, res) => {
 }
 
 export const allpostget = async (req, res) => {
+  const user = req.userId;
+  try {
+    const post = await Postcontent.find({ author: user });
+    if(!post) return next ( new APIerror(400, "Post not found"))
   
+    
+    return res.status(200).json({
+      success : true,
+      message : "successfully get all post ",
+      post
+    })
+    
+  } catch (error) {
+    console.log(error);
+    
+    return res.status(200).json({
+      success : false,
+      message : "not successfully get all post ",
+      error
+    })
+  }
 }
 
 // < ------------------------------  POST CONTENT START    ----------------------------- >
 
 export const PostCont = async (req, res, next) => {
   try {
+    const user = req.userId;
+    console.log(user);
     
     const { title, tags, categories, description } = req.body
     if (!title || !tags || !categories || !description) {
@@ -212,7 +231,8 @@ export const PostCont = async (req, res, next) => {
             tags,
             categories,
             description,
-            coverimg: result.secure_url
+            coverimg: result.secure_url,
+            author: user
         })
 
         return res.status(200).json({
@@ -317,7 +337,7 @@ export const login = async (req, res, next) => {
 
 
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE })
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE })
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -329,7 +349,6 @@ export const login = async (req, res, next) => {
             success: true,
             message: "Succesfull logged in ...",
             user: {
-                ID: user.ID,
                 name: user.name,
                 email: user.email
             }
@@ -354,8 +373,9 @@ export const isAuthenticated = (req, res, next) => {
         const verifyToken = jwt.verify(token, process.env.JWT_SECRET)
 
         if (!verifyToken) return next(new APIerror(400, "Not authenticated "))
-
-        req.user = verifyToken
+          console.log(verifyToken._id);
+          
+        req.userId = verifyToken._id;
         next()
     } catch (error) {
         console.log("Error in isauthneticated section ", error.message);
