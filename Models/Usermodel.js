@@ -29,10 +29,17 @@ const PostSchema = new mongoose.Schema({
   tags: { type: String, required: true },
   coverimg: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
-  // author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "sociail-login", required: true },
 });
+
+const PostFeatures = new mongoose.Schema({
+  likecount : { type: Number},
+  watchcount: {type: Number, required: true},
+  postid : {type: mongoose.Schema.Types.ObjectId, ref: "Post" },
+  userid : {type: mongoose.Schema.Types.ObjectId, ref: "User" }
+})
 
 export const Userauth = mongoose.model("User", UserSchema);
 export const Postcontent = mongoose.model("Post", PostSchema)
 export const userModel = mongoose.model("sociail-login", GoogleSchema)
-
+export const Post_Features = mongoose.model("postfeature", PostFeatures)
