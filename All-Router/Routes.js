@@ -1,6 +1,6 @@
 import express from "express"
 import { login, logout, isAuthenticated, verifyOtp, register, ResendOtp, PostCont, Googlelogin, Githublogin } from "../Controllers/Usercontroller.js";
-import { allpostget } from "../Controllers/Usercontroller.js";
+import { allpostget, Likefunc, Viewfunc } from "../Controllers/Usercontroller.js";
 import { upload } from "../Multer-Cloud/Multer.js";
 
 
@@ -16,5 +16,7 @@ router.post("/post", isAuthenticated, upload.single("coverimg"), PostCont);
 router.get("/allpost", isAuthenticated, allpostget)
 router.get("/auth/google", Googlelogin)
 router.get("/auth/github", Githublogin)
+router.patch("/like", Likefunc)
+router.patch("/view", Viewfunc)
 
 export default router
