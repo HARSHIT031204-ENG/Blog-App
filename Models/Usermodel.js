@@ -34,11 +34,24 @@ const PostSchema = new mongoose.Schema({
 
 const PostFeatures = new mongoose.Schema({
   likecount : { type: Number},
-  watchcount: {type: Number, required: true},
-  postid : {type: mongoose.Schema.Types.ObjectId, ref: "Post" },
-  userid : {type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  watchcount: {type: Number},
+  postid : [{type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  userid : [{type: mongoose.Schema.Types.ObjectId, ref: "User" }]
 })
 
+
+const OrderSchema = new mongoose.Schema({
+  user : {type : mongoose.Schema.Types.ObjectId, ref: 'User'},
+  item : Array,
+  amount : Number,
+  paymentid : String,
+  currency : {type: String, default: 'inr'},
+  status: {type: String, default: "pending"}
+}, timestamps = true)
+
+
+
+export const order = mongoose.model("Order", OrderSchema)
 export const Userauth = mongoose.model("User", UserSchema);
 export const Postcontent = mongoose.model("Post", PostSchema)
 export const userModel = mongoose.model("sociail-login", GoogleSchema)
