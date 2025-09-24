@@ -42,7 +42,7 @@ const PostFeatures = new mongoose.Schema({
 
 const OrderSchema = new mongoose.Schema({
   user : {type : mongoose.Schema.Types.ObjectId, ref: 'User'},
-  item : Array,
+  items : Array,
   amount : Number,
   paymentid : String,
   currency : {type: String, default: 'inr'},
