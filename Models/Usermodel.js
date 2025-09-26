@@ -44,12 +44,13 @@ const OrderSchema = new mongoose.Schema({
   user : {type : mongoose.Schema.Types.ObjectId, ref: 'User'},
   items : Array,
   amount : Number,
-  paymentid : String,
-  currency : {type: String, default: 'inr'},
+  currency : {type: String, default: 'INR'},
+  razorpayorder : String,
+  razorpaymentid : String,
   status: {type: String, default: "pending"}
-}, timestamps = true)
+}, {timestamps : true})
 
-
+  
 
 export const order = mongoose.model("Order", OrderSchema)
 export const Userauth = mongoose.model("User", UserSchema);
